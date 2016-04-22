@@ -15,12 +15,25 @@ import codecs
 class HearthstoneSpider(Spider):
     name = "hearthstone"
     allow_domains = ["duowan.com"]
-    global start_urls = ["http://db.duowan.com/lushi/card/list/"]
+    start_urls = ["http://db.duowan.com/lushi/card/list/",
+            "http://db.duowan.com/lushi/card/list/eyJwIjoyLCJzb3J0IjoiaWQuZGVzYyJ9.html",
+            "http://db.duowan.com/lushi/card/list/eyJwIjozLCJzb3J0IjoiaWQuZGVzYyJ9.html",
+	    "http://db.duowan.com/lushi/card/list/eyJwIjo0LCJzb3J0IjoiaWQuZGVzYyJ9.html",
+	    "http://db.duowan.com/lushi/card/list/eyJwIjo1LCJzb3J0IjoiaWQuZGVzYyJ9.html",
+	    "http://db.duowan.com/lushi/card/list/eyJwIjo2LCJzb3J0IjoiaWQuZGVzYyJ9.html",
+	    "http://db.duowan.com/lushi/card/list/eyJwIjo3LCJzb3J0IjoiaWQuZGVzYyJ9.html",
+	    "http://db.duowan.com/lushi/card/list/eyJwIjo4LCJzb3J0IjoiaWQuZGVzYyJ9.html",
+	    "http://db.duowan.com/lushi/card/list/eyJwIjo5LCJzb3J0IjoiaWQuZGVzYyJ9.html",
+	    "http://db.duowan.com/lushi/card/list/eyJwIjoxMCwic29ydCI6ImlkLmRlc2MifQ_3__3_.html",
+	    "http://db.duowan.com/lushi/card/list/eyJwIjoxMSwic29ydCI6ImlkLmRlc2MifQ_3__3_.html",
+	    "http://db.duowan.com/lushi/card/list/eyJwIjoxMiwic29ydCI6ImlkLmRlc2MifQ_3__3_.html",
+	    "http://db.duowan.com/lushi/card/list/eyJwIjoxMywic29ydCI6ImlkLmRlc2MifQ_3__3_.html",
+	    "http://db.duowan.com/lushi/card/list/eyJwIjoxNCwic29ydCI6ImlkLmRlc2MifQ_3__3_.html",
+            "http://db.duowan.com/lushi/card/list/eyJwIjoxNSwic29ydCI6ImlkLmRlc2MifQ_3__3_.html"
+            ]
     
     def parse(self,response):
         sel = Selector(response)
-        next_url = sel.xpath('//div/a[@rel="next"]/@href').extract()[0].encode('utf-8')
-        start_urls.append(next_url)
         dates = sel.xpath('//tbody/tr')
         items = []
         for data in dates:
