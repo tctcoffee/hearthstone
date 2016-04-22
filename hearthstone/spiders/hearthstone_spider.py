@@ -36,6 +36,7 @@ class HearthstoneSpider(Spider):
         sel = Selector(response)
         dates = sel.xpath('//tbody/tr')
         items = []
+	skill = ""
         for data in dates:
             item = HearthstoneItem()
             item['name'] = data.xpath('td[@class="name"]/a/text()').extract()[0].encode('utf-8')
@@ -50,8 +51,12 @@ class HearthstoneSpider(Spider):
             #比如战吼技能，有的没有，就需要做一个判断   另外，多个技能如何解决？
             if data.xpath('count(td[@class="skill"]/a)').extract()[0].encode('utf-8')=='0.0':
                 item['skill_type'] = "None"
-            else:
-                item['skill_type'] = data.xpath('td[@class="skill"]/a/@data-tips').extract()[0].encode('utf-8')
+            elif len(data.xpath('td[@class="skill"]/a/@data-tips'))==1:
+		data.xpath('td[@class="skill"]/a/@data-tips').extract()[0].encode('utf-8')
+	    else:
+		for data in data.xpath('td[@class="skill"]/a/@data-tips'):
+			skill = skill+","+data.extract()[0].encode('utf-8')
+                	item['skill_type'] = skill 
             #卡牌的描述，有的没有，也需要一个判断......
             if data.xpath('td[3]/text()')==[]:
                 item['description'] = "None"
