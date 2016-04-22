@@ -15,12 +15,12 @@ import codecs
 class HearthstoneSpider(Spider):
     name = "hearthstone"
     allow_domains = ["duowan.com"]
-    global start_urls = ["http://db.duowan.com/lushi/card/list/"]
+    start_urls = ["http://db.duowan.com/lushi/card/list/"]
     
     def parse(self,response):
         sel = Selector(response)
         next_url = sel.xpath('//div/a[@rel="next"]/@href').extract()[0].encode('utf-8')
-        start_urls.append(next_url)
+        self.start_urls.append(next_url)
         dates = sel.xpath('//tbody/tr')
         items = []
         for data in dates:
