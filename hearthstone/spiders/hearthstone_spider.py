@@ -36,7 +36,6 @@ class HearthstoneSpider(Spider):
         sel = Selector(response)
         dates = sel.xpath('//tbody/tr')
         items = []
-	skill = ""
         for data in dates:
             item = HearthstoneItem()
             item['name'] = data.xpath('td[@class="name"]/a/text()').extract()[0].encode('utf-8')
@@ -48,22 +47,21 @@ class HearthstoneSpider(Spider):
             item['image_url'] = data.xpath('td[@class="name"]/a/@data-src').extract()[0].encode('utf-8')
             item['type'] = data.xpath('td[5]/text()').extract()[0].encode('utf-8')
 	    item['char'] = data.xpath('td[4]/text()').extract()[0].encode('utf-8')
-            #比如战吼技能，有的没有，就需要做一个判断   另外，多个技能如何解决？
-            if data.xpath('count(td[@class="skill"]/a)').extract()[0].encode('utf-8')=='0.0':
-                item['skill_type'] = "None"
-            elif len(data.xpath('td[@class="skill"]/a/@data-tips'))==1:
-		data.xpath('td[@class="skill"]/a/@data-tips').extract()[0].encode('utf-8')
-	    else:
-		for data in data.xpath('td[@class="skill"]/a/@data-tips'):
-			skill = skill+","+data.extract()[0].encode('utf-8')
-                	item['skill_type'] = skill 
-            #卡牌的描述，有的没有，也需要一个判断......
-            if data.xpath('td[3]/text()')==[]:
-                item['description'] = "None"
-            else:
-                item['description'] = data.xpath('td[3]/text()').extract()[0].encode('utf-8')
             item['cost'] = data.xpath('td[6]/text()').extract()[0].encode('utf-8')
             item['attack'] = data.xpath('td[7]/text()').extract()[0].encode('utf-8')
 	    item['health'] = data.xpath('td[8]/text()').extract()[0].encode('utf-8')
+            #卡牌的描述，有的没有，也需要一个判断......
+            if data.xpath('td[3]/text()')==[]:
+                item['description'] = "None"
+	    #比如战吼技能，有的没有，就需要做一个判断   另外，多个技能如何解决？
+            if data.xpath('count(td[@class="skill"]/a)').extract()[0].encode('utf-8')=='0.0':
+                item['skill_type'] = "None"
+            elif data.xpath('count(td[@class="skill"]/a)')=='1.0':
+                data.xpath('td[@class="skill"]/a/@data-tips').extract()[0].encode('utf-8')
+            else:
+		skill = ""
+                for data in data.xpath('td[@class="skill"]/a/@data-tips'):
+		       skill = data.extract().encode('utf-8')+","+skill
+                       item['skill_type'] = skill[:-1] 
             items.append(item)
         return items
